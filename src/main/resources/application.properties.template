@@ -1,0 +1,35 @@
+# ============================================================
+# Project Vigilance — application.properties TEMPLATE
+# ============================================================
+# Copy this file to application.properties and fill in your values.
+# NEVER commit application.properties to GitHub (it is in .gitignore).
+# ============================================================
+
+# PostgreSQL Database Configuration
+spring.datasource.url=jdbc:postgresql://localhost:5432/vigilance
+spring.datasource.username=YOUR_POSTGRES_USERNAME
+spring.datasource.password=YOUR_POSTGRES_PASSWORD
+spring.jpa.hibernate.ddl-auto=update
+
+# SQL Logging (set to false in production to reduce console noise)
+spring.jpa.show-sql=false
+
+# Spring Task Scheduler Thread Pool
+spring.task.scheduling.pool.size=5
+
+# Gmail SMTP Configuration
+# Use a Gmail App Password (not your real Gmail password)
+# Generate at: https://myaccount.google.com/apppasswords
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=YOUR_GMAIL_ADDRESS
+spring.mail.password=YOUR_GMAIL_APP_PASSWORD
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+
+# NVD API Key (optional — without key: 5 req/30s, with key: 50 req/30s)
+# Register for free at: https://nvd.nist.gov/developers/request-an-api-key
+nvd.api.key=${NVD_API_KEY:}
+
+# System Admin Alert Email
+admin.alert.email=YOUR_EMAIL_ADDRESS

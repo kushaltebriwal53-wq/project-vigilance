@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Vigilance - SOC Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #090e17;
+            --card-bg: rgba(15, 23, 42, 0.7);
+            --primary: #00f0ff;
+            --primary-glow: rgba(0, 240, 255, 0.6);
+            --secondary: #7000ff;
+            --text: #94a3b8;
+            --text-bright: #f8fafc;
+            --border: rgba(51, 65, 85, 0.5);
+            --danger: #ff0055;
+            --warning: #ffb800;
+            --success: #00ff88;
+        }
+
+        @keyframes bg-gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(-45deg, #090e17, #0f172a, #050510, #130a2a);
+            background-size: 400% 400%;
+            animation: bg-gradient 15s ease infinite;
+            color: var(--text);
+            padding-bottom: 50px;
+            min-height: 100vh;
+        }
+
+        nav {
+            background: rgba(9, 14, 23, 0.85);
+            border-bottom: 1px solid var(--border);
+            padding: 18px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            backdrop-filter: blur(12px);
+            z-index: 100;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-bright);
+            text-decoration: none;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: var(--primary);
+            text-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .nav-links { display: flex; gap: 25px; }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        .nav-links a:hover::after, .nav-links a.active::after { width: 80%; }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary);
+            background: rgba(0, 240, 255, 0.1);
+        }
+
+        .container { max-width: 1200px; margin: 60px auto; padding: 0 20px; }
+
+        .hero { text-align: center; margin-bottom: 60px; }
+
+        .hero h1 {
+            font-size: 56px;
+            color: var(--text-bright);
+            margin-bottom: 15px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .hero h1 span {
+            background: -webkit-linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: var(--text);
+            margin-bottom: 50px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 40px;
+            border-radius: 16px;
+            backdrop-filter: blur(20px);
+            transition: transform 0.4s ease, border-color 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .card:hover {
+            border-color: rgba(0, 240, 255, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            color: var(--text-bright);
+            font-size: 24px;
+            letter-spacing: -0.5px;
+            margin-bottom: 15px;
+        }
+
+        .card p {
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 30px;
+            color: #94a3b8;
+            flex-grow: 1;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 5px 20px rgba(112, 0, 255, 0.4);
+            font-size: 16px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .btn:hover {
+            box-shadow: 0 8px 25px rgba(0, 240, 255, 0.5);
+            transform: translateY(-2px) scale(1.02);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="/" class="logo">🛡️ Project <span>Vigilance</span></a>
+        <div class="nav-links">
+            <a href="/" class="active">Dashboard</a>
+            <a href="/host-scan">Target Scanner</a>
+            <a href="/software-check">CVE Auditor</a>
+            <a href="/ssl-check">SSL Checker</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="hero">
+            <h1>Welcome to <span>Command Center</span></h1>
+            <p>Your comprehensive hybrid security intelligence platform.</p>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h2>🎯 Advanced Host Scanner</h2>
+                <p>Scan autonomous IP ranges or domains across thousands of ports to detect open attack vectors. Receive
+                    accurately calculated metrics dynamically powered by Project Vigilance risk pipelines.</p>
+                <a href="/host-scan" class="btn">Launch Scanner</a>
+            </div>
+
+            <div class="card">
+                <h2>⚠️ Software Auditor</h2>
+                <p>Pinpoint vulnerable application versions instantly. Integrates directly with the National
+                    Vulnerability Database (NVD) and EPSS frameworks to prioritize patching efforts intelligently.</p>
+                <a href="/software-check" class="btn">Audit Software</a>
+            </div>
+
+            <div class="card">
+                <h2>🔒 Cryptography Engine</h2>
+                <p>Deconstruct TLS and SSL certificates to detect malicious actors, self-signed discrepancies, invalid
+                    trust branches, and expiration timelines mapped directly against your web systems.</p>
+                <a href="/ssl-check" class="btn">Verify SSL</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

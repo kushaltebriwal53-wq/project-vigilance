@@ -1,0 +1,37 @@
+# ============================================================
+# Project Vigilance — .gitignore
+# ============================================================
+
+# Maven build output
+target/
+*.class
+*.jar
+
+# IMPORTANT: Contains passwords — NEVER commit this
+src/main/resources/application.properties
+
+# IntelliJ IDEA project files
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Logs
+*.log
+logs/
+
+# Environment files
+.env
+.env.local

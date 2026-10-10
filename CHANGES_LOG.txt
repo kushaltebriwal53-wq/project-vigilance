@@ -1,0 +1,10 @@
+# Security Scanner Project - Change Log
+Date: 2026-09-15
+
+## Changes Made
+- Fixed HTTP probe `Host` header and `User-Agent` in Python scripts.
+- Enhanced SSL check for SAN matching, deep trust validation, and exact expiration metrics.
+- Upgraded Spring Controllers to capture, process, and return structured Python scan JSON securely.
+- Fixed Repository queries in Host Scan to prevent false-matched targets.
+- Transformed HTML templates into modern Dark-Mode interfaces with responsive metrics tables.
+- Implemented optional Email Alert routing for manual user scans.

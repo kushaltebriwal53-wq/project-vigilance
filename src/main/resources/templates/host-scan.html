@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Project Vigilance - Host Scanner</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090e17;
+      --card-bg: rgba(15, 23, 42, 0.7);
+      --primary: #00f0ff;
+      --primary-glow: rgba(0, 240, 255, 0.6);
+      --secondary: #7000ff;
+      --text: #94a3b8;
+      --text-bright: #f8fafc;
+      --border: rgba(51, 65, 85, 0.5);
+      --danger: #ff0055;
+      --warning: #ffb800;
+      --success: #00ff88;
+    }
+
+    @keyframes pulse-glow {
+      0% { box-shadow: 0 0 10px var(--primary-glow); }
+      50% { box-shadow: 0 0 25px var(--primary-glow); }
+      100% { box-shadow: 0 0 10px var(--primary-glow); }
+    }
+    
+    @keyframes bg-gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(-45deg, #090e17, #0f172a, #050510, #130a2a);
+      background-size: 400% 400%;
+      animation: bg-gradient 15s ease infinite;
+      color: var(--text);
+      padding-bottom: 50px;
+      min-height: 100vh;
+    }
+
+    nav {
+      background: rgba(9, 14, 23, 0.85);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(12px);
+      z-index: 100;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .logo {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text-bright);
+      text-decoration: none;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo span {
+      color: var(--primary);
+      text-shadow: 0 0 15px var(--primary-glow);
+    }
+
+    .nav-links { display: flex; gap: 25px; }
+
+    .nav-links a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      padding: 10px 16px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 2px;
+      background: var(--primary);
+      transition: width 0.3s ease;
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+
+    .nav-links a:hover::after, .nav-links a.active::after { width: 80%; }
+
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--primary);
+      background: rgba(0, 240, 255, 0.1);
+    }
+
+    .container { max-width: 1100px; margin: 50px auto; padding: 0 20px; }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 40px;
+      border-radius: 16px;
+      backdrop-filter: blur(20px);
+      margin-bottom: 40px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      transition: transform 0.4s ease, border-color 0.4s ease;
+    }
+    
+    .card:hover {
+      border-color: rgba(0, 240, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    h2 { 
+      color: var(--text-bright); 
+      margin-top: 0; 
+      font-size: 28px;
+      letter-spacing: -0.5px;
+    }
+
+    input[type="text"], input[type="email"] {
+      width: 100%;
+      padding: 16px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border);
+      color: var(--text-bright);
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 16px;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+
+    input[type="text"]:focus, input[type="email"]:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+      background: rgba(15, 23, 42, 1);
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+
+    .row input[type="email"] { margin-bottom: 0; flex-grow: 1; }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--text-bright);
+      white-space: nowrap;
+      user-select: none;
+    }
+    
+    .checkbox-label input[type="checkbox"] {
+      accent-color: var(--primary);
+      width: 18px;
+      height: 18px;
+    }
+
+    .btn {
+      padding: 16px 32px;
+      background: linear-gradient(135deg, var(--secondary), var(--primary));
+      color: #fff;
+      font-weight: 700;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 5px 20px rgba(112, 0, 255, 0.4);
+      font-size: 16px;
+      width: 100%;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .btn:hover:not(:disabled) {
+      box-shadow: 0 8px 25px rgba(0, 240, 255, 0.5);
+      transform: translateY(-2px) scale(1.02);
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+    }
+
+    .btn:disabled { 
+      opacity: 0.5; 
+      cursor: not-allowed; 
+      animation: pulse-glow 2s infinite;
+      box-shadow: 0 0 15px var(--primary-glow);
+    }
+
+    .status-msg {
+      margin-top: 20px;
+      font-weight: 600;
+      color: var(--warning);
+      text-align: center;
+      font-size: 16px;
+      letter-spacing: 0.5px;
+    }
+
+    .terminal {
+      background-color: #050510;
+      padding: 20px;
+      font-family: 'Courier New', Courier, monospace;
+      color: #00ff88;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 255, 136, 0.3);
+      white-space: pre-wrap;
+      font-size: 15px;
+      overflow-x: auto;
+      max-height: 350px;
+      overflow-y: auto;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+    }
+
+    table { 
+      width: 100%; 
+      border-collapse: separate; 
+      border-spacing: 0;
+      margin-top: 25px; 
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    th, td {
+      padding: 18px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--primary);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 13px;
+      letter-spacing: 1px;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    
+    tr { transition: background-color 0.3s ease; }
+    tr:hover td { background-color: rgba(0, 240, 255, 0.05); }
+
+    .badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: inline-block;
+    }
+
+    .vuln-badge {
+      background-color: rgba(255, 0, 85, 0.15);
+      color: var(--danger);
+      border: 1px solid rgba(255, 0, 85, 0.3);
+    }
+
+    .safe-badge {
+      background-color: rgba(0, 255, 136, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(0, 255, 136, 0.3);
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <a href="/" class="logo">🛡️ Project <span>Vigilance</span></a>
+    <div class="nav-links">
+      <a href="/">Dashboard</a>
+      <a href="/host-scan" class="active">Target Scanner</a>
+      <a href="/software-check">CVE Auditor</a>
+      <a href="/ssl-check">SSL Checker</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="card">
+      <h2>🎯 Advanced Host Scanner</h2>
+      <p style="margin-bottom: 25px;">Provide an IPv4 address or domain to execute a deep port scan with NVD CVE
+        mapping. Open ports are automatically analysed against the NVD database.</p>
+      <form id="singleForm">
+        <input type="text" id="hostInput" placeholder="Enter IP or Domain (e.g. 192.168.1.1 or scanme.nmap.org)"
+          required />
+        <div class="row">
+          <input type="email" id="userEmail" placeholder="Email (Optional — receive results by mail)" />
+          <label class="checkbox-label"><input type="checkbox" id="sendMail"> Email Result</label>
+          <label class="checkbox-label" style="margin-left: 20px;"><input type="checkbox" id="autoSchedule"> Monitor this daily</label>
+        </div>
+        <button type="submit" class="btn" id="scanBtn">Initiate Reconnaissance</button>
+      </form>
+      <p id="status" class="status-msg"></p>
+      <div id="scheduleBanner" style="display:none; margin-top: 15px; padding: 12px 18px; border-radius: 8px; background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.3); color: var(--success); font-weight: 500;">
+        ⏱️ <strong>Automated Background Monitor Active:</strong> <span id="scheduleText"></span>
+      </div>
+    </div>
+
+    <!-- Active Monitored Targets Manager -->
+    <div id="monitoredCard" class="card" style="margin-top: 25px;">
+      <h2 style="color: var(--primary); font-size: 20px; margin-top: 0; display: flex; justify-content: space-between; align-items: center;">
+        <span>📡 Active Monitored Targets</span>
+        <button onclick="loadActiveTargets()" style="background: transparent; border: 1px solid var(--border); color: var(--text); padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 12px;">🔄 Refresh</button>
+      </h2>
+      <div id="targetsList" style="margin-top: 15px;">
+        <p style="color: var(--text); font-size: 14px; margin: 0;">Loading monitored assets...</p>
+      </div>
+    </div>
+
+    <div id="resultsCard" class="card" style="display:none;">
+      <h2 style="margin-bottom: 15px; color: var(--primary);">System Terminal Execution Log</h2>
+      <div class="terminal" id="terminalLog"></div>
+
+      <h2 style="margin-top: 30px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">Threat Intelligence
+        Findings</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Port</th>
+            <th>Detected Service</th>
+            <th>CVE Integrity</th>
+            <th>CVSS Base</th>
+            <th>EPSS Predict</th>
+            <th>Risk Score</th>
+          </tr>
+        </thead>
+        <tbody id="vulnTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('singleForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const host = document.getElementById('hostInput').value.trim();
+      const email = document.getElementById('userEmail').value.trim();
+      const sendMail = document.getElementById('sendMail').checked;
+      const autoSchedule = document.getElementById('autoSchedule').checked;
+      const btn = document.getElementById('scanBtn');
+      const status = document.getElementById('status');
+
+      btn.disabled = true;
+      status.style.color = 'var(--warning)';
+      status.innerText = 'Deploying port-probe agents against target...';
+      document.getElementById('resultsCard').style.display = 'none';
+
+      // Build payload — only include email if checkbox is ticked AND email is provided
+      let payload = 'host=' + encodeURIComponent(host);
+      if (sendMail && email) {
+        payload += '&userEmail=' + encodeURIComponent(email);
+      }
+      if (autoSchedule) {
+        payload += '&autoSchedule=true';
+      }
+
+      try {
+        const res = await fetch('/host-scan/single', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: payload
+        });
+
+        const data = await res.json();
+        document.getElementById('terminalLog').innerText = data.log || '(no output)';
+
+        const tbody = document.getElementById('vulnTableBody');
+        tbody.innerHTML = '';
+
+        if (data.vulnerabilities && data.vulnerabilities.length > 0) {
+          data.vulnerabilities.forEach(v => {
+            const isSafe = !v.cveID || v.cveID.startsWith('NOMATCH');
+            const badgeClass = isSafe ? 'safe-badge' : 'vuln-badge';
+            const cveText = isSafe ? 'No CVE' : v.cveID;
+
+            // Extract port number from vulnerabilityName "Exposed X Service on Port 8080"
+            let portFound = '—';
+            if (v.vulnerabilityName) {
+              const m = v.vulnerabilityName.match(/Port\s+(\d+)/i);
+              if (m) portFound = m[1];
+            }
+
+            // Determine priority — use backend value if available, else infer from service type
+            let prio = (v.priorityScore != null && v.priorityScore > 0) ? v.priorityScore : null;
+            if (prio === null) {
+              const name = (v.vulnerabilityName || '').toUpperCase();
+              if (name.includes('FTP') || name.includes('SMB') || name.includes('SQL')) prio = 60.0;
+              else if (name.includes('SSH') || name.includes('RDP') || name.includes('TELNET')) prio = 45.0;
+              else if (name.includes('HTTP')) prio = 20.0;
+              else prio = 25.0;
+            }
+
+            const prioColor = prio >= 50 ? 'var(--danger)' : (prio >= 25 ? 'var(--warning)' : 'var(--success)');
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td style="font-weight:600; color:#fff;">${portFound}</td>
+              <td>${v.vulnerabilityName || '—'}</td>
+              <td><span class="badge ${badgeClass}">${cveText}</span></td>
+              <td>${v.cvssScore != null ? v.cvssScore : '—'}</td>
+              <td>${v.epssScore != null ? v.epssScore : '—'}</td>
+              <td style="font-weight:bold; color:${prioColor};">${prio}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        } else {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--success); font-weight:bold;">No active or vulnerable entry points detected on this asset.</td></tr>';
+        }
+
+        document.getElementById('resultsCard').style.display = 'block';
+        status.innerText = 'Scan complete. Vectors enumerated successfully.';
+        status.style.color = 'var(--success)';
+
+        if (autoSchedule) {
+          const banner = document.getElementById('scheduleBanner');
+          const txt = document.getElementById('scheduleText');
+          banner.style.display = 'block';
+          txt.innerText = 'Asset "' + host + '" enrolled in daily background scan. Next re-assessment running in ~3 minutes.';
+          loadActiveTargets();
+        }
+
+      } catch (error) {
+        status.innerText = 'Fatal Error: ' + error.message;
+        status.style.color = 'var(--danger)';
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    async function loadActiveTargets() {
+      const container = document.getElementById('targetsList');
+      try {
+        const res = await fetch('/api/targets/active');
+        const data = await res.json();
+        if (!data || data.length === 0) {
+          container.innerHTML = '<p style="color: var(--text); font-size: 14px; margin: 0;">No assets currently enrolled in scheduled monitoring.</p>';
+          return;
+        }
+        let html = '<div style="display:flex; flex-direction:column; gap:10px;">';
+        data.forEach(t => {
+          const mailTag = t.userEmail ? `<span style="color:var(--text); font-size:12px; margin-left:8px;">(Alerts to: ${t.userEmail})</span>` : '';
+          html += `
+            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); padding:10px 15px; border-radius:8px; border:1px solid var(--border);">
+              <div>
+                <strong style="color:var(--text-bright);">${t.targetName}</strong>
+                <span class="badge ${t.targetType === 'HOST' ? 'safe-badge' : 'vuln-badge'}" style="margin-left:8px; font-size:11px;">${t.targetType}</span>
+                ${mailTag}
+              </div>
+              <button onclick="stopTarget(${t.id})" style="background:rgba(255,0,85,0.15); border:1px solid rgba(255,0,85,0.4); color:var(--danger); padding:6px 14px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s ease;">
+                ⏹️ Stop Monitoring
+              </button>
+            </div>
+          `;
+        });
+        html += '</div>';
+        container.innerHTML = html;
+      } catch (e) {
+        container.innerHTML = '<p style="color:var(--danger); font-size:13px;">Error fetching active targets: ' + e.message + '</p>';
+      }
+    }
+
+    async function stopTarget(id) {
+      if (!confirm('Are you sure you want to stop automated monitoring for this asset?')) return;
+      try {
+        const res = await fetch('/api/targets/stop?id=' + encodeURIComponent(id), { method: 'POST' });
+        const data = await res.json();
+        if (data.status === 'SUCCESS') {
+          loadActiveTargets();
+        } else {
+          alert('Error: ' + data.message);
+        }
+      } catch (e) {
+        alert('Request failed: ' + e.message);
+      }
+    }
+
+    // Load active targets on initial page render
+    document.addEventListener('DOMContentLoaded', loadActiveTargets);
+  </script>
+</body>
+
+</html>
